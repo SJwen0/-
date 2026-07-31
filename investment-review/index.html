@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI/科创/医药成长攒股持仓、行情、网格与自动复盘工具" />
+  <title>成长攒股自动复盘｜公网静态版</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>成长攒股自动复盘</h1>
+      <p>AI · 科创 · 医药｜东方财富行情 · 三锚估值 · 自适应网格</p>
+    </div>
+    <div class="top-actions">
+      <span id="providerStatus" class="status-dot">行情未检查</span>
+      <button id="refreshBtn" class="primary">刷新行情并复盘</button>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="主导航">
+    <button class="tab active" data-tab="dashboard">仪表盘</button>
+    <button class="tab" data-tab="positions">持仓与候选池</button>
+    <button class="tab" data-tab="review">自动复盘</button>
+    <button class="tab" data-tab="settings">设置与备份</button>
+  </nav>
+
+  <main>
+    <section id="dashboard" class="panel active">
+      <div id="summaryCards" class="card-grid"></div>
+      <div class="two-col">
+        <article class="card">
+          <div class="card-title-row"><h2>组合警报</h2><span class="hint">先处理风险，再看买点</span></div>
+          <div id="portfolioAlerts" class="alert-list"></div>
+        </article>
+        <article class="card">
+          <div class="card-title-row"><h2>产业链暴露</h2><span class="hint">按总资产计算</span></div>
+          <div id="clusterBars" class="bar-list"></div>
+        </article>
+      </div>
+      <article class="card">
+        <div class="card-title-row"><h2>当前允许分批的标的</h2><span class="hint">仅为规则提示，不会自动下单</span></div>
+        <div class="table-wrap"><table id="buyTable"></table></div>
+      </article>
+    </section>
+
+    <section id="positions" class="panel">
+      <div class="toolbar">
+        <div>
+          <h2>持仓与候选池</h2>
+          <p>价格、涨跌和ATR由行情接口更新；EPS、FCF、DPS与风险判断由你维护。</p>
+        </div>
+        <button id="addBtn" class="primary">新增标的</button>
+      </div>
+      <div class="table-wrap"><table id="positionsTable"></table></div>
+    </section>
+
+    <section id="review" class="panel">
+      <div class="toolbar">
+        <div>
+          <h2>自动复盘报告</h2>
+          <p id="reviewTime">尚未生成</p>
+        </div>
+        <button id="reviewBtn" class="primary">立即复盘</button>
+      </div>
+      <div id="reviewCards" class="review-grid"></div>
+    </section>
+
+    <section id="settings" class="panel">
+      <div class="two-col settings-grid">
+        <article class="card">
+          <h2>组合设置</h2>
+          <form id="settingsForm" class="form-grid compact"></form>
+          <button type="submit" form="settingsForm" class="primary">保存设置</button>
+        </article>
+        <article class="card">
+          <h2>数据导入导出</h2>
+          <p>建议每次修改后导出 JSON 备份。公共CDN版本默认不长期保存真实持仓。</p>
+          <div class="stack-actions">
+            <label class="file-button">导入 JSON<input id="jsonInput" type="file" accept=".json,application/json" hidden /></label>
+            <label class="file-button">导入 CSV<input id="csvInput" type="file" accept=".csv,text/csv" hidden /></label>
+            <button id="exportJsonBtn">导出 JSON</button>
+            <button id="exportCsvBtn">导出 CSV</button>
+            <button id="seedBtn">恢复示例研究池</button>
+            <button id="clearBtn" class="danger">清空全部数据</button>
+          </div>
+          <div id="importResult" class="hint-box"></div>
+        </article>
+      </div>
+      <article class="card notice">
+        <h2>数据与合规说明</h2>
+        <p>本页面是纯前端工具，持仓计算在你的浏览器内完成，不连接券商、不自动下单。东方财富公开网页端点并非正式开发者API，可能随时调整；若实时读取失败，可以填写手工现价继续复盘。</p>
+        <p id="storageNotice"></p>
+      </article>
+    </section>
+  </main>
+
+  <dialog id="positionDialog">
+    <form id="positionForm" method="dialog">
+      <div class="dialog-head">
+        <div><h2 id="dialogTitle">新增标的</h2><p>基本面字段需要按最新财报维护。</p></div>
+        <button type="button" id="closeDialog" class="icon-btn" aria-label="关闭">×</button>
+      </div>
+      <input type="hidden" name="id" />
+      <div id="positionFields" class="form-grid"></div>
+      <div class="dialog-actions">
+        <button type="button" id="deleteBtn" class="danger hidden">删除</button>
+        <button type="button" id="cancelBtn">取消</button>
+        <button type="submit" class="primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
